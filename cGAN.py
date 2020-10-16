@@ -113,15 +113,17 @@ def train(epoch):
             fake_correct=Variable(torch.zeros(batch_size,1)).to(device)
             real_correct=Variable(torch.ones(batch_size,1)).to(device)
             z=torch.randn(batch_size, 100,device=device)
-
+            gen_img_label=Variable(torch.randint(10,(batch_size,))) # random_lable e.g. Hey generator, make this number
+            gen_img_one_hot=oneHot(gen_img_label,len_label=10) 
+            
             data,target=Variable(data).to(device),Variable(target).to(device)
 
             one_hot=oneHot(target.to(device),len_label=10) 
 
             # Gen 학습
-            gen_img=Gen(z,one_hot)
+            gen_img=Gen(z,gen_img_one_hot)
             G_optimizer.zero_grad()
-            G_loss=criterion(Discrim(gen_img,one_hot),real_c`orrect)
+            G_loss=criterion(Discrim(gen_img,gen_img_one_hot),real_correct)
             G_loss.backward()
             G_optimizer.step()
             # Discrim 학습
