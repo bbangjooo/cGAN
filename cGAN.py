@@ -25,10 +25,8 @@ device= 'cuda' if cuda.is_available() else 'cpu'
 
 # Params setting
 
-leraing_rate=0.1
+leraing_rate=0.0001
 batch_size=100
-weight_decay=1.00004
-momentum=0.5 # default
 
 # Dataset
 train_set=MNIST(download_root,train=True,transform=transform,download=True)
@@ -93,8 +91,8 @@ Discrim=Discriminator().to(device)
 # Loss & Optim
 criterion=nn.BCELoss()
 
-G_optimizer=optim.SGD(Gen.parameters(),lr=leraing_rate, weight_decay=weight_decay,momentum=momentum)
-D_optimizer=optim.SGD(Discrim.parameters(),lr=leraing_rate, weight_decay=weight_decay,momentum=momentum)
+G_optimizer = torch.optim.Adam(G.parameters(), lr=leraing_rate)
+D_optimizer = torch.optim.Adam(D.parameters(), lr=leraing_rate)
 
 # One_Hot
 
