@@ -98,7 +98,7 @@ D_optimizer = torch.optim.Adam(D.parameters(), lr=leraing_rate)
 
 def oneHot(label,len_label=10): # label : 0 ~ 9
     # fills [100,10] with 0, only 1 at label ex ) [0,0,0,1,0,0,0,0,0,0]
-    one_hot=Variable(torch.zeros(label.size(0),len_label))
+    one_hot=torch.zeros(label.size(0),len_label,dtype=torch.int64)
     one_hot=one_hot.scatter(1,label.unsqueeze(1),1)
     return Variable(one_hot)
 
@@ -111,7 +111,7 @@ def train(epoch):
             fake_correct=Variable(torch.zeros(batch_size,1)).to(device)
             real_correct=Variable(torch.ones(batch_size,1)).to(device)
             z=torch.randn(batch_size, 100,device=device)
-            gen_img_label=Variable(torch.randint(10,(batch_size,))) # random_lable e.g. Hey generator, make this number
+            gen_img_label=torch.randint(10,(batch_size,)) # random_lable e.g. Hey generator, make this number
             gen_img_one_hot=oneHot(gen_img_label,len_label=10) 
             
             data,target=Variable(data).to(device),Variable(target).to(device)
@@ -151,5 +151,6 @@ if __name__ == "__main__":
         train(epoch)
     images=[]
     for file_name in os.listdir(stored_path):
-        images.append(imageio.imread(file_name))
+        file_path = os.path.join(stored_path, file_name)
+        images.append(imageio.imread(file_path))
         imageio.mimsave('result.gif',images)
